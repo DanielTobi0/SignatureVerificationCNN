@@ -2,12 +2,10 @@ import torch
 import torchvision
 from torchvision import transforms
 import matplotlib.pyplot as plt
-
-from typing import List, Tuple
-
 from PIL import Image
-from utils import load_model
 import os
+from typing import List, Tuple
+from utils import load_model
 
 # Set device
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -34,8 +32,8 @@ def pred_and_plot_image(
 
     # Open image
     img = os.listdir(image_path)[0]
-    img = Image.open(image_path)
-
+    img_path = f'{image_path}/{img}'
+    img = Image.open(img_path)
 
     # Create transformation for image (if one doesn't exist)
     if transform is not None:
@@ -45,9 +43,6 @@ def pred_and_plot_image(
             [
                 transforms.Resize(image_size),
                 transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
             ]
         )
 
@@ -59,6 +54,7 @@ def pred_and_plot_image(
     # Turn on model evaluation mode and inference mode
     model.eval()
     with torch.inference_mode():
+        
         # Transform and add an extra dimension to image (model requires samples in [batch_size, color_channels, height, width])
         transformed_image = image_transform(img).unsqueeze(dim=0)
 
@@ -72,8 +68,10 @@ def pred_and_plot_image(
     target_image_pred_label = torch.argmax(target_image_pred_probs, dim=1)
     if target_image_pred_label == 0:
         print('Signature matched')
+    elif target_image_pred_label == 1:
+        print('Signature do not match')
     else:
-        print('Signature does not match')
+        print('Something is wrong')
 
     # Plot image with predicted label and probability
     plt.figure()
@@ -85,4 +83,4 @@ def pred_and_plot_image(
 
 
 cnn_model = load_model(model_path='models/signature_model.pth')
-pred_and_plot_image(image_path='predict/0103004_02.png', model=cnn_model)
+pred_and_plot_image(image_path='predict', model=cnn_model)
