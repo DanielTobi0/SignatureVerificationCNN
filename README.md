@@ -57,3 +57,7 @@ Run the ```prediction.py``` file
 ```
 python prediction.py
 ```
+
+### 8. Grad Cam
+To visualize the grad cam, the part the model focuses when making prediction.
+Run the ```grad_cam.py```
