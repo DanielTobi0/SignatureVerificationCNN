@@ -5,5 +5,6 @@ file_path = {
     'test_csv_data_path': 'data/test_data.csv',
     'model_save_path': 'models/signature_model.pth',
     'predict_image_path': 'predict',
-    'model_name': "signature_model.pth"
+    'model_name': "signature_model.pth",
+    'predict_image_folder': 'predict'
     }
