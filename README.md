@@ -57,6 +57,3 @@ Run the ```prediction.py``` file
 ```
 python prediction.py
 ```
-
-### Additional Notes
-Ensure that you have Python 3.6 or later installed on your system.
