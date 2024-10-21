@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 import pandas as pd
 from file_paths import file_path
+
+
 '''
 # download and unzip data to folder
 !unzip /content/drive/MyDrive/SignatureRecognition/ML_material.zip -d /content/drive/MyDrive/SignatureRecognition
