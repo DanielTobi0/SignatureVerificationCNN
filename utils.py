@@ -1,9 +1,11 @@
-"""
-Contains various utility functions for PyTorch model training and saving.
-"""
 import torch
 from pathlib import Path
 from model_builder import SignatureCNN
+import matplotlib.pyplot as plt
+import random
+from torchvision import transforms
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def save_model(model: torch.nn.Module,
@@ -20,7 +22,7 @@ def save_model(model: torch.nn.Module,
     Example usage:
     save_model(model=model_0,
                target_dir="models",
-               model_name="05_going_modular_tingvgg_model.pth")
+               model_name="cnn_model.pth")
     """
     # Create target directory
     target_dir_path = Path(target_dir)
@@ -43,3 +45,26 @@ def load_model(model_path: str):
 
     cnn_model.load_state_dict(torch.load(model_path, map_location=device), strict=True)
     return cnn_model
+
+
+def show_random_images(images, labels):
+    # Function to display random images
+
+    plt.figure(figsize=(10, 4))
+
+    # Get a random sample of 9 indices
+    random_indices = random.sample(range(len(images)), k=3)
+
+    for i, idx in enumerate(random_indices):
+        plt.subplot(1, 3, i + 1)
+        plt.imshow(images[idx].reshape(224, 224), cmap='gray')
+        plt.title(f"Label: {int(labels[idx])}")
+        plt.axis("off")
+
+    plt.show()
+
+
+data_transform = transforms.Compose([
+    transforms.Lambda(lambda x: x / 255.0),  # normalize to [0, 1]
+    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+])

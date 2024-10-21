@@ -5,10 +5,21 @@ import numpy as np
 
 
 class SignatureCNN(nn.Module):
+    """
+    A custom CNN classifier model design to the detect authenticity of signatures.
+    """
+
     def __init__(self, input_channels: int = 3):
+        """
+        Initialises the CNN architecture.
+        This contains the model building blocks, and a fully connected classifier head.
+
+        Args:
+            input_channels (int): Number of input channels in the image.
+        """
         super().__init__()
         self.conv_block_1 = nn.Sequential(
-            # Input shape: [batch_size, 1, 224, 224]
+            # Input shape:
             nn.Conv2d(in_channels=input_channels,
                       out_channels=32,
                       kernel_size=3,
@@ -44,22 +55,51 @@ class SignatureCNN(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Defines the forward pass.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape [batch_size, input_channels, 224, 224].
+
+        Returns:
+            torch.Tensor: Output probabilities from the classifier head for each class.
+
+        Examples:
+        #   >>> torch.manual_seed(42)
+                model_0 = SignatureCNN(input_channels=1)
+
+                sample = torch.rand(size=([32, 1, 224, 224]))
+                model_0(sample)
+        """
         x = self.conv_block_1(x)
         x = self.conv_block_2(x)
         x = self.classifier(x)
         return x
 
 
-'''
-torch.manual_seed(42)
-model_0 = SignatureCNN(input_channels=1)
-
-sample = torch.rand(size=([32, 1, 224, 224]))
-model_0(sample)
-'''
-
+# Generated class and docstrings from ChatGPT
 class GradCAM:
+    """
+    Class for generating Class Activation Maps (CAM) using the Grad-CAM technique.
+
+    Grad-CAM helps visualize the regions of the input image that contribute most to the model's predictions.
+    This technique is particularly useful for understanding CNNs and debugging models.
+
+    Attributes:
+        model (torch.nn.Module): The neural network model used for inference.
+        target_layer (torch.nn.Module): The layer of the model for which Grad-CAM is computed.
+        gradients (torch.Tensor): Captured gradients of the target layer during the backward pass.
+        activations (torch.Tensor): Captured activations of the target layer during the forward pass.
+    """
+
     def __init__(self, model, target_layer):
+        """
+        Initializes the GradCAM instance.
+
+        Args:
+            model (torch.nn.Module): The neural network model to analyze.
+            target_layer (torch.nn.Module): The layer to target for Grad-CAM visualization.
+        """
         self.model = model
         self.target_layer = target_layer
         self.gradients = None
@@ -67,10 +107,16 @@ class GradCAM:
         self._register_hooks()
 
     def _register_hooks(self):
+        """
+        Registers forward and backward hooks on the target layer to capture activations and gradients.
+        """
+
         def forward_hook(module, input, output):
+            """Captures the activations from the target layer during the forward pass."""
             self.activations = output
 
         def backward_hook(module, grad_in, grad_out):
+            """Captures the gradients from the target layer during the backward pass."""
             self.gradients = grad_out[0]
 
         # Register hooks to capture activations and gradients
@@ -78,6 +124,16 @@ class GradCAM:
         self.target_layer.register_backward_hook(backward_hook)
 
     def generate_cam(self, input_image, target_class):
+        """
+        Generates the Class Activation Map (CAM) for a specific class.
+
+        Args:
+            input_image (torch.Tensor): Input tensor representing the image, shape [batch_size, channels, height, width].
+            target_class (int): The class index for which to generate the CAM.
+
+        Returns:
+            np.ndarray: The normalized heatmap representing the regions of interest for the target class.
+        """
         # Step 1: Forward pass
         output = self.model(input_image)
 

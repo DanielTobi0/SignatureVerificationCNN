@@ -1,12 +1,8 @@
-"""
-Trains a PyTorch image classification model using device-agnostic code.
-"""
 import argparse
-import os
 import torch
 import data_setup, engine, model_builder, utils
-from torchvision import transforms
-
+from file_paths import file_path
+from utils import device
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Hyperparameter settings for training the model.")
@@ -14,44 +10,23 @@ parser.add_argument('--num_epochs', type=int, default=15, help='Number of traini
 parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training')
 parser.add_argument('--hidden_units', type=int, default=10, help='Number of hidden units in the model')
 parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for the optimizer')
-
-# Parse the arguments
 args = parser.parse_args()
 
-
-# Setup hyperparameters from args
-# NUM_EPOCHS = 15
-# BATCH_SIZE = 32
-# HIDDEN_UNITS = 10
-# LEARNING_RATE = 0.001
 
 NUM_EPOCHS = args.num_epochs
 BATCH_SIZE = args.batch_size
 HIDDEN_UNITS = args.hidden_units
 LEARNING_RATE = args.learning_rate
 
-# Setup directories
-train_dir = "raw_data/train"
-test_dir = "raw_data/test"
 
-# Setup target device
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
-# Create transforms
-data_transform = transforms.Compose([
-    # transforms.Resize((64, 64)),
-    transforms.ToTensor()
-])
-
-# Create DataLoaders with help from data_setup.py
+# Dataloaders
 train_dataloader, test_dataloader = data_setup.create_dataloaders(
-    train_dir=train_dir,
-    test_dir=test_dir,
-    transform=data_transform,
+    train_csv_data_path=file_path['train_csv_data_path'],
+    test_csv_data_path=file_path['test_csv_data_path'],
     batch_size=BATCH_SIZE
 )
 
-# Create model with help from model_builder.py
+# Model
 model = model_builder.SignatureCNN(
     input_channels=3
 ).to(device)
@@ -73,6 +48,6 @@ engine.train(model=model,
 # Save the model with help from utils.py
 utils.save_model(model=model,
                  target_dir="models",
-                 model_name="signature_model.pth")
+                 model_name=file_path["signature_model.pth"])
 
 

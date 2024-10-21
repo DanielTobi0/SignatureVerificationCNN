@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import os
 from typing import List, Tuple
-from utils import load_model
-
-# Set device
-device = "cuda" if torch.cuda.is_available() else "cpu"
+from utils import load_model, device
+from file_paths import file_path
 
 
 # Predict on a target image with a target model
@@ -46,8 +44,6 @@ def pred_and_plot_image(
             ]
         )
 
-    ### Predict on image ###
-
     # Make sure the model is on the target device
     model.to(device)
 
@@ -82,5 +78,5 @@ def pred_and_plot_image(
     plt.axis(False)
 
 
-cnn_model = load_model(model_path='models/signature_model.pth')
-pred_and_plot_image(image_path='predict', model=cnn_model)
+cnn_model = load_model(model_path=file_path['model_save_path'])
+pred_and_plot_image(image_path=file_path['predict_image_path'], model=cnn_model)

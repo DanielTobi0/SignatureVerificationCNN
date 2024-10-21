@@ -1,9 +1,9 @@
 import torch
-
 from tqdm.auto import tqdm
 from typing import Dict, List, Tuple
 
 
+# reference: https://github.com/mrdbourke/pytorch-deep-learning/blob/main/04_pytorch_custom_datasets.ipynb
 def train_step(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader,
                loss_fn: torch.nn.Module,
