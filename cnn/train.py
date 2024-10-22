@@ -2,7 +2,7 @@ import argparse
 import torch
 import data_setup, engine, model_builder, utils
 from file_paths import file_path
-from utils import device
+
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Hyperparameter settings for training the model.")
@@ -29,7 +29,7 @@ train_dataloader, test_dataloader = data_setup.create_dataloaders(
 # Model
 model = model_builder.SignatureCNN(
     input_channels=3
-).to(device)
+).to(file_path['device'])
 
 # Set loss and optimizer
 loss_fn = torch.nn.CrossEntropyLoss()
@@ -43,11 +43,11 @@ engine.train(model=model,
              loss_fn=loss_fn,
              optimizer=optimizer,
              epochs=NUM_EPOCHS,
-             device=device)
+             device=file_path['device'])
 
 # Save the model with help from utils.py
 utils.save_model(model=model,
                  target_dir="models",
-                 model_name=file_path["signature_model.pth"])
+                 model_name=file_path["model_name"])
 
 

@@ -3,3 +3,6 @@ data/
 raw_data/
 .idea/
 __pycache__/
+cnn/__pycache__/
+models/
+raw_data/
