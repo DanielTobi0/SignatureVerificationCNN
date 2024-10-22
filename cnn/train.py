@@ -2,6 +2,8 @@ import argparse
 import torch
 import data_setup, engine, model_builder, utils
 from file_paths import file_path
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 
 
 # Set up argument parser
@@ -32,9 +34,15 @@ model = model_builder.SignatureCNN(
 ).to(file_path['device'])
 
 # Set loss and optimizer
-loss_fn = torch.nn.CrossEntropyLoss()
+class_weights = torch.tensor([1.0, 3.0])  # Higher weight for minority class (e.g., forged signatures)
+loss_fn = torch.nn.CrossEntropyLoss(weight=class_weights)
+
+# loss_fn = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(),
-                             lr=LEARNING_RATE)
+                             lr=LEARNING_RATE,
+                             weight_decay=1e-4)
+
+scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=5, verbose=True)
 
 # Start training with help from engine.py
 engine.train(model=model,
@@ -42,12 +50,11 @@ engine.train(model=model,
              test_dataloader=test_dataloader,
              loss_fn=loss_fn,
              optimizer=optimizer,
+             scheduler=scheduler,
              epochs=NUM_EPOCHS,
              device=file_path['device'])
 
-# Save the model with help from utils.py
 utils.save_model(model=model,
                  target_dir="models",
                  model_name=file_path["model_name"])
-
 

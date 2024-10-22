@@ -52,11 +52,6 @@ def prepare_data(data_dir: str):
     for per in os.listdir(data_dir):
         for data in glob.glob(os.path.join(data_dir, per, '*.*')):
             img = cv2.imread(data)
-
-            # skip if the image cannot be read
-            if img is None:
-                continue
-
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.resize(img, (SIZE, SIZE))  # numpy requires that all elements to have shape in each dimension.
 
@@ -65,8 +60,6 @@ def prepare_data(data_dir: str):
             else:
                 real_images.append(img)
 
-    if not real_images and not forged_images:
-        raise ValueError('No images found in the specified directory.')
 
     real_images = np.array(real_images)
     forged_images = np.array(forged_images)

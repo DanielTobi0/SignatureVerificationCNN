@@ -54,6 +54,8 @@ class SignatureCNN(nn.Module):
                       out_features=2)  # 2 classes: real vs forged
         )
 
+        
+
     def forward(self, x):
         """
         Defines the forward pass.
