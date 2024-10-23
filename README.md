@@ -67,8 +67,8 @@ To predict the authenticity of an image:
 
 Create a folder called ``predict`` in the cnn directory.
 Place the image you want to predict in the ``predict`` folder.
-Run the ``cnn/prediction.py`` file
+Run the ``cnn/single_img_prediction.py`` file
 
 ```
-python cnn/prediction.py
+python cnn/single_img_prediction.py
 ```
