@@ -9,6 +9,6 @@ file_path = {
     'predict_image_path': 'predict',
     'model_name': "signature_model.pth",
     'predict_image_folder': 'predict',
-    'image_size': 224,
+    'image_size': 90,
     'device': torch.device("cuda" if torch.cuda.is_available() else "cpu")
     }

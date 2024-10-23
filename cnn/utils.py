@@ -1,18 +1,13 @@
-import os
 import torch
 from pathlib import Path
 from model_builder import SignatureCNN
-import matplotlib.pyplot as plt
-import random
 from torchvision import transforms
-from PIL import Image
-from file_paths import file_path
-import numpy as np
-from model_builder import SignatureCNN, GradCAM
-import cv2
 import warnings
+from file_paths import file_path
+import os
+import cv2
+
 warnings.filterwarnings('ignore')
-                        
 
 
 def save_model(model: torch.nn.Module,
@@ -41,7 +36,6 @@ def save_model(model: torch.nn.Module,
     assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name should end with '.pt' or '.pth'"
     model_save_path = target_dir_path / model_name
 
-
     # Save the model state_dict()
     print(f"[INFO] Saving model to: {model_save_path}")
     torch.save(obj=model.state_dict(),
@@ -68,24 +62,34 @@ def load_model(model_path: str):
     return cnn_model
 
 
-'''def show_random_images(images, labels):
-    # Function to display random images
+def get_single_image_and_transform():
+    """
+    This function loads the first image from the specified prediction folder, and apply transformation (resizing and conversion to a tensor).
 
-    plt.figure(figsize=(10, 4))
+    Returns:
+        torch.Tensor: The transformed image tensor with shape (1, 3, image_size, image_size).
+    """
+    image_folder_name = file_path['predict_image_folder']
+    img_name = os.listdir(image_folder_name)[0]
+    img_path = f'{image_folder_name}/{img_name}'
+    img = cv2.imread(img_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    # Get a random sample of 9 indices
-    random_indices = random.sample(range(len(images)), k=3)
+    image_size = file_path['image_size']
+    image_transform = transforms.Compose(
+        [
+            transforms.ToPILImage(),
+            transforms.Resize((image_size, image_size)),
+            transforms.ToTensor(),
+            transforms.Grayscale(num_output_channels=1),
+            transforms.Normalize(mean=[0.5], std=[0.5])
+        ]
+    )
+    return image_transform(img).unsqueeze(dim=0)
 
-    for i, idx in enumerate(random_indices):
-        plt.subplot(1, 3, i + 1)
-        plt.imshow(images[idx].reshape(224, 224), cmap='gray')
-        plt.title(f"Label: {int(labels[idx])}")
-        plt.axis("off")
-
-    plt.show()
-'''
 
 data_transform = transforms.Compose([
-    transforms.Lambda(lambda x: x / 255.0),  # normalize to [0, 1]
-    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    transforms.Grayscale(num_output_channels=1),
+    transforms.Lambda(lambda x: x / 255.0),
+    transforms.Normalize(mean=[0.5], std=[0.5])
 ])

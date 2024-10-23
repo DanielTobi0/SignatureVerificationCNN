@@ -80,8 +80,7 @@ class SiameseSignatureDataset(Dataset):
         return img1, img2, torch.tensor(label, dtype=torch.float32)
 
 
-def dataloader():
-    # Define transformations (resize, normalize, etc.)
+'''def dataloader():
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
@@ -98,4 +97,4 @@ def dataloader():
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-    return train_loader, test_dataset
+    return train_loader, test_loader'''

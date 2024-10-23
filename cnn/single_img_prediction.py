@@ -1,19 +1,18 @@
 import torch
 import torchvision
 from torchvision import transforms
-import matplotlib.pyplot as plt
-from PIL import Image
 import os
 from typing import Tuple
 from utils import load_model
 from file_paths import file_path
 from grad_cam import predict_outcome
+import cv2
 
 
 def pred_and_plot_image(
         model: torch.nn.Module,
         image_path: str,
-        image_size: Tuple[int, int] = (224, 224),
+        image_size: Tuple[int, int] = (90, 90),
         transform: torchvision.transforms = None,
         device: torch.device = file_path['device'],
 
@@ -38,15 +37,20 @@ def pred_and_plot_image(
 
     img = os.listdir(image_path)[0]
     img_path = f'{image_path}/{img}'
-    img = Image.open(img_path)
+
+    img = cv2.imread(img_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     if transform is not None:
         image_transform = transform
     else:
         image_transform = transforms.Compose(
             [
+                transforms.ToPILImage(),
                 transforms.Resize(image_size),
                 transforms.ToTensor(),
+                transforms.Grayscale(num_output_channels=1),
+                transforms.Normalize(mean=[0.5], std=[0.5])
             ]
         )
 

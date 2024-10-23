@@ -29,34 +29,30 @@ class SiameseSignatureCNN(nn.Module):
             nn.MaxPool2d(2)
         )
 
-        # After two MaxPool2d layers, spatial dimensions are reduced by factor of 4
         feature_size = 224 // 4  # 56
 
-        # This layer outputs a feature vector instead of classification
         self.fc = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(64 * feature_size * feature_size, 128),  # Output a 128-dim feature vector
+            nn.Linear(64 * feature_size * feature_size, 128),
             nn.ReLU()
         )
 
     def forward(self, x):
         x = self.conv_block_1(x)
         x = self.conv_block_2(x)
-        x = self.fc(x)  # Output the feature vector
+        x = self.fc(x)
         return x
 
 
 class SiameseNetwork(nn.Module):
     def __init__(self, base_cnn: nn.Module):
         super(SiameseNetwork, self).__init__()
-        self.base_cnn = base_cnn  # The shared CNN
+        self.base_cnn = base_cnn 
 
     def forward(self, input1, input2):
-        # Forward pass for both inputs through the same CNN
         output1 = self.base_cnn(input1)
         output2 = self.base_cnn(input2)
 
-        # Compute the Euclidean distance between the two outputs (embeddings)
         distance = torch.norm(output1 - output2, p=2, dim=1)
         return distance
 

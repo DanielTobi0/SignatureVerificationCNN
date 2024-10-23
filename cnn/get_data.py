@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from file_paths import file_path
 
-
 '''
 # download and unzip data to folder
 !unzip /content/drive/MyDrive/SignatureRecognition/ML_material.zip -d /content/drive/MyDrive/SignatureRecognition
@@ -44,7 +43,7 @@ def prepare_data(data_dir: str):
 
     """
 
-    SIZE = 224
+    SIZE = file_path['image_size']
 
     real_images = []
     forged_images = []
@@ -59,7 +58,6 @@ def prepare_data(data_dir: str):
                 forged_images.append(img)
             else:
                 real_images.append(img)
-
 
     real_images = np.array(real_images)
     forged_images = np.array(forged_images)

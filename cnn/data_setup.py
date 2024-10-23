@@ -4,6 +4,7 @@ import ast
 import torch
 from torch.utils.data import Dataset, DataLoader
 from utils import data_transform
+from file_paths import file_path
 
 
 class CustomDataset(Dataset):
@@ -35,16 +36,14 @@ class CustomDataset(Dataset):
         label = self.df.iloc[index]['labels']
         img = self.df.iloc[index]['images']
 
-        img = img.reshape(224, 224)
-        img = np.stack([img] * 3)  # 3 channels (C, H, W)
-        # img = np.expand_dims(img, axis=0) # 1 channel
-
+        img = img.reshape(file_path['image_size'], file_path['image_size'])
+        img = np.expand_dims(img, axis=0)  # 1 channel
         img = torch.tensor(img, dtype=torch.float32)
+
         if self.transform:
             img = self.transform(img)
 
         label = torch.tensor(label, dtype=torch.long)
-
         return img, label
 
     def __len__(self):

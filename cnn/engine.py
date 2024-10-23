@@ -96,7 +96,6 @@ def train(model: torch.nn.Module,
           train_dataloader: torch.utils.data.DataLoader,
           test_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim.Optimizer,
-          scheduler: torch.optim.lr_scheduler,
           loss_fn: torch.nn.Module,
           epochs: int,
           device: torch.device) -> Dict[str, List]:
@@ -149,7 +148,6 @@ def train(model: torch.nn.Module,
                                         dataloader=test_dataloader,
                                         loss_fn=loss_fn,
                                         device=device)
-        scheduler.step(test_loss)
         # Print out what's happening
         print(
             f"Epoch: {epoch + 1} | "
