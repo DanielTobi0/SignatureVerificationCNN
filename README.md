@@ -47,10 +47,10 @@ Download Images
 
 ### 5. Convert Images to Numpy Arrays
 
-Run the ``get_data.py`` file. This step only needs to be done once. It converts the images to a numpy array and stores them in a CSV file
+Run the ``cnn/get_data.py`` file. This step only needs to be done once. It converts the images to a numpy array and stores them in a CSV file
 
 ```
-python get_data.py
+python cnn/get_data.py
 ```
 
 ### 6. Train the Model
@@ -58,7 +58,7 @@ python get_data.py
 To train the model, you can pass hyperparameter arguments via the terminal. Here’s an example command
 
 ```
-python train.py --num_epochs 15 --batch_size 32 --hidden_units 10 --learning_rate 0.001
+python cnn/train.py --num_epochs 15 --batch_size 32 --hidden_units 10 --learning_rate 0.001
 ```
 
 ### 7. Make Predictions
@@ -72,9 +72,3 @@ Run the ``cnn/prediction.py`` file
 ```
 python cnn/prediction.py
 ```
-
-### 8. Grad Cam
-
-To visualize the grad cam, the part the model focuses when making prediction.
-
-Run the ``cnn/grad_cam.py``
