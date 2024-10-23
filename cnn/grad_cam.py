@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import cv2
+import numpy as np
 from model_builder import SignatureCNN
 import torch
 from utils import get_single_image_and_transform
@@ -93,9 +93,7 @@ class GradCAM:
         return heatmap
 
 
-import matplotlib.pyplot as plt
-import cv2
-import numpy as np
+
 
 
 def grad_cam_image_visualization(grad_cam, input_image, predicted_class):
