@@ -58,7 +58,9 @@ def load_model(model_path: str):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     cnn_model = SignatureCNN().to(device)
 
-    cnn_model.load_state_dict(torch.load(model_path, map_location=device), strict=True)
+    # weights_only=True blocks arbitrary code execution from untrusted pickles (CVE-2025-32434).
+    state_dict = torch.load(model_path, map_location=device, weights_only=True)
+    cnn_model.load_state_dict(state_dict, strict=True)
     return cnn_model
 
 
